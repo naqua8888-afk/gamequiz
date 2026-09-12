@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вирішальний раунд — Корпоративний квіз</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a href="tournament.html" class="back-link">← До турнірної сітки</a>
+
+    <header class="top">
+      <h1>⚡ Вирішальний раунд</h1>
+      <p id="subHeading">Хто відповість правильно першим — перемагає в турнірі!</p>
+    </header>
+
+    <div class="tiebreak-question-box" id="questionBox">
+      <div class="pts" id="qCounter"></div>
+      <h3 id="qText"></h3>
+      <div class="answer-box" id="aBox">
+        <strong>Відповідь:</strong>
+        <div id="aText"></div>
+      </div>
+      <div class="modal-actions" style="justify-content:center; margin-top:20px;" id="showBtnWrap">
+        <button class="btn btn-primary" id="showAnswerBtn">Показати відповідь</button>
+      </div>
+      <div class="finish-panel" style="display:none; margin-top:16px;" id="judgePanel">
+        <div class="buttons">
+          <button class="big-win-btn suggested" id="winABtn"></button>
+          <button class="big-win-btn suggested" id="winBBtn"></button>
+          <button class="big-win-btn" id="nextQBtn">Ніхто — наступне питання</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="tournament-core.js"></script>
+  <script src="tiebreak-data.js"></script>
+  <script src="tiebreak.js"></script>
+</body>
+</html>

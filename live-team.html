@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live-раунд — вхід команди</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap" style="max-width:480px;">
+    <header class="top">
+      <h1>📱 Live-раунд</h1>
+      <p>Введіть назву команди й пароль, видані ведучим</p>
+    </header>
+
+    <div id="loginCard" class="setup-card">
+      <label style="font-size:0.78rem; color:var(--text-muted);">Назва команди</label>
+      <input type="text" id="teamNameInput" placeholder="Наприклад: Команда 1" style="margin-bottom:14px;" />
+      <label style="font-size:0.78rem; color:var(--text-muted);">Пароль</label>
+      <input type="text" id="teamPasswordInput" placeholder="Пароль команди" />
+      <div class="form-actions" style="margin-top:16px;">
+        <button class="btn btn-primary" id="loginBtn">Увійти</button>
+      </div>
+      <p id="loginError" style="color:#ef4444; display:none;"></p>
+    </div>
+
+    <div id="gameCard" class="setup-card" style="display:none;">
+      <div class="live-status-row">
+        <span class="live-status-pill" id="teamStatusPill">—</span>
+        <span class="live-qtimer" id="teamQTimer">—</span>
+      </div>
+
+      <div id="teamWaitingNote" class="locked-note">Очікуємо на початок раунду ведучим…</div>
+
+      <div id="teamQuestionBox" style="display:none;">
+        <div class="cat-name" id="teamQCategory"></div>
+        <h3 id="teamQText" style="line-height:1.4;"></h3>
+        <div id="teamSongHint" style="display:none; color:var(--text-muted); margin-bottom:10px;">🎵 Слухайте пісню на екрані</div>
+        <textarea id="teamAnswerInput" rows="3" placeholder="Ваша відповідь..." style="width:100%; background:var(--bg); color:var(--text); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:10px;"></textarea>
+        <div class="form-actions" style="margin-top:12px;">
+          <button class="btn btn-primary" id="submitAnswerBtn">Надіслати відповідь</button>
+        </div>
+        <p id="submitStatus" style="color:var(--text-muted);"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="live-config.js"></script>
+  <script src="live-api.js"></script>
+  <script src="live-team.js"></script>
+</body>
+</html>

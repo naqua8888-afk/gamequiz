@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Матч — Корпоративний квіз</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a href="tournament.html" class="back-link">← До турнірної сітки</a>
+
+    <header class="match-header">
+      <h1 id="matchTitle">Завантаження...</h1>
+      <div class="cat-name" id="catName"></div>
+    </header>
+
+    <div class="match-scoreboard">
+      <div class="team-score-box">
+        <div class="name" id="teamAName">—</div>
+        <div class="val" id="teamAScore">0</div>
+      </div>
+      <div class="team-score-box">
+        <div class="name" id="teamBName">—</div>
+        <div class="val" id="teamBScore">0</div>
+      </div>
+    </div>
+
+    <div class="tasks-grid" id="tasksGrid"></div>
+
+    <div class="finish-panel" id="finishPanel" style="display:none;">
+      <h3>Усі завдання зіграно! Хто переміг у цьому раунді?</h3>
+      <p style="color:var(--text-muted);">При нічиї — оберіть переможця самостійно.</p>
+      <div class="buttons">
+        <button class="big-win-btn" id="winABtn"></button>
+        <button class="big-win-btn" id="winBBtn"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальне вікно завдання -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="pts" id="modalPoints">100 балів</div>
+      <h3 id="modalQuestion">Текст запитання</h3>
+
+      <div class="answer-box" id="modalAnswerBox">
+        <strong>Відповідь:</strong>
+        <div id="modalAnswerText"></div>
+      </div>
+
+      <div class="modal-actions" id="modalActionsShow">
+        <button class="btn btn-ghost" id="closeModalBtn">Закрити</button>
+        <button class="btn btn-primary" id="showAnswerBtn">Показати відповідь</button>
+      </div>
+
+      <div class="modal-actions" id="modalActionsJudge" style="display:none;">
+        <button class="btn btn-ghost" id="noOneBtn">Ніхто</button>
+        <button class="btn btn-correct" id="pointsABtn"></button>
+        <button class="btn btn-correct" id="pointsBBtn"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="tournament-core.js"></script>
+  <script src="match.js"></script>
+</body>
+</html>

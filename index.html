@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Квіз-турнір</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>🏆 Квіз-турнір</h1>
+      <p>8 команд по 4 людини · вибування</p>
+    </header>
+
+    <div id="continueBanner" class="continue-banner" style="display:none;">
+      <div>Турнір уже триває. Продовжити з того місця, де зупинились?</div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="continueBtn">Продовжити турнір</button>
+      </div>
+    </div>
+
+    <div class="setup-card">
+      <h2 style="margin-top:0;">Назви команд</h2>
+      <p style="color:var(--text-muted); font-size:0.9rem;">
+        8 команд по 4 гравці. Раунд 1: 1↔2, 3↔4, 5↔6, 7↔8.
+      </p>
+      <div class="team-inputs" id="teamInputs"></div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="startBtn">🚀 Розпочати новий турнір</button>
+      </div>
+    </div>
+
+    <footer class="note">
+      Формат: Раунд 1 (4 матчі) → Раунд 2 (2 матчі) → Фінал команд (1 матч) →
+      Фінальний поділ команди-переможця на 2 підгрупи (1 матч) → Вирішальний раунд.
+      <br /><br />
+      <a href="live-host.html" class="back-link" style="justify-content:center;">📡 Live-раунд з телефонами команд (QR-вхід) →</a>
+    </footer>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="tournament-core.js"></script>
+  <script>
+    const teamInputsEl = document.getElementById("teamInputs");
+    const defaults = defaultState().teams;
+
+    defaults.forEach((name, i) => {
+      const wrap = document.createElement("div");
+      wrap.innerHTML = `
+        <label>Команда ${i + 1}</label>
+        <input type="text" id="teamName${i}" value="${name}" maxlength="40" />
+      `;
+      teamInputsEl.appendChild(wrap);
+    });
+
+    if (tournamentExists()) {
+      document.getElementById("continueBanner").style.display = "flex";
+    }
+
+    document.getElementById("continueBtn").addEventListener("click", () => {
+      window.location.href = "tournament.html";
+    });
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      if (tournamentExists()) {
+        const ok = confirm(
+          "Уже є турнір у процесі. Розпочати новий — весь поточний прогрес буде втрачено. Продовжити?"
+        );
+        if (!ok) return;
+      }
+      const state = defaultState();
+      for (let i = 0; i < 8; i++) {
+        const val = document.getElementById("teamName" + i).value.trim();
+        if (val) state.teams[i] = val;
+      }
+      saveTournament(state);
+      window.location.href = "tournament.html";
+    });
+  </script>
+</body>
+</html>
