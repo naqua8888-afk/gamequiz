@@ -3,21 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Турнірна сітка — Корпоративний квіз</title>
+  <title>Турнірна сітка</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="wrap">
-    <a href="index.html" class="back-link">← Налаштування / новий турнір</a>
-
-    <header class="top">
-      <h1>🏆 Турнірна сітка</h1>
-      <p>Оберіть категорію для кожного матчу та фіксуйте результати</p>
-    </header>
+    <a href="index.html" class="back-link">← Команди</a>
 
     <section class="cat-board-section">
-      <h2 class="section-title">🗂️ Дошка категорій</h2>
-      <p class="section-hint">Усі команди бачать тут, які категорії ще вільні, а які вже зіграні.</p>
       <div class="cat-board" id="catBoard"></div>
     </section>
 
@@ -40,9 +33,7 @@
     <div class="tiebreak-section" id="tiebreakSection"></div>
 
     <footer class="note">
-      Категорія, яку вже зіграно в будь-якому матчі, стає недоступною (сірою) для інших матчів.
-      <br />
-      <button class="reset-btn" id="resetTournamentBtn" style="margin-top:14px;">Скинути весь турнір</button>
+      <button class="reset-btn" id="resetTournamentBtn">Скинути турнір</button>
     </footer>
   </div>
 

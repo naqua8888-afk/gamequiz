@@ -17,7 +17,7 @@ function emptyMatch() {
     scoreB: 0,
     completed: false,
     winnerIndex: null, // для r1/r2/r3 — індекс команди (0-7)
-    answeredPoints: []
+    answered: [] // індекси зіграних питань
   };
 }
 
@@ -41,7 +41,7 @@ function defaultState() {
       scoreB: 0,
       completed: false,
       winner: null, // 'A' | 'B'
-      answeredPoints: []
+      answered: [] // індекси зіграних питань
     },
     tiebreak: {
       currentQuestionIndex: 0,

@@ -4,12 +4,12 @@
 
 function categoryOptionsHtml(state, currentCategoryId) {
   const usedExcludingSelf = state.usedCategoryIds.filter((id) => id !== currentCategoryId);
-  let html = `<option value="">— Оберіть категорію —</option>`;
+  let html = `<option value="">— Категорія —</option>`;
   CATEGORIES.forEach((cat) => {
     const isUsedElsewhere = usedExcludingSelf.includes(cat.id);
     const selected = cat.id === currentCategoryId ? "selected" : "";
     const disabled = isUsedElsewhere ? "disabled" : "";
-    const label = cat.title + (isUsedElsewhere ? " (вже зіграно)" : "");
+    const label = cat.title + (isUsedElsewhere ? " (зайнята)" : "");
     html += `<option value="${cat.id}" ${selected} ${disabled}>${label}</option>`;
   });
   return html;
@@ -18,8 +18,8 @@ function categoryOptionsHtml(state, currentCategoryId) {
 function buildMatchCard(state, stageKey, idx, m) {
   const card = document.createElement("div");
   const teamsKnown = m.teamAIndex != null && m.teamBIndex != null;
-  const teamAName = m.teamAIndex != null ? state.teams[m.teamAIndex] : "Очікується";
-  const teamBName = m.teamBIndex != null ? state.teams[m.teamBIndex] : "Очікується";
+  const teamAName = m.teamAIndex != null ? state.teams[m.teamAIndex] : "?";
+  const teamBName = m.teamBIndex != null ? state.teams[m.teamBIndex] : "?";
 
   card.className = "match-card" + (m.completed ? " done" : teamsKnown ? "" : " pending");
 
@@ -33,7 +33,7 @@ function buildMatchCard(state, stageKey, idx, m) {
       <div class="match-team-row ${m.winnerIndex === m.teamBIndex ? "winner" : ""}">
         <span>${teamBName}</span><span class="match-score">${m.scoreB}</span>
       </div>
-      <div class="match-category-label">✅ Категорія: ${cat ? cat.title : "—"}</div>
+      <div class="match-category-label">${cat ? cat.title : ""}</div>
     `;
     return card;
   }
@@ -43,7 +43,6 @@ function buildMatchCard(state, stageKey, idx, m) {
       <div class="match-team-row"><span>${teamAName}</span></div>
       <div class="match-vs">VS</div>
       <div class="match-team-row"><span>${teamBName}</span></div>
-      <div class="pending-note">Очікування переможців попереднього раунду</div>
     `;
     return card;
   }
@@ -52,8 +51,10 @@ function buildMatchCard(state, stageKey, idx, m) {
     <div class="match-team-row"><span>${teamAName}</span></div>
     <div class="match-vs">VS</div>
     <div class="match-team-row"><span>${teamBName}</span></div>
-    <select class="match-category-select">${categoryOptionsHtml(state, m.categoryId)}</select>
-    <button class="match-play-btn" ${m.categoryId ? "" : "disabled"}>▶ Грати цей раунд</button>
+    <div class="match-controls">
+      <select class="match-category-select">${categoryOptionsHtml(state, m.categoryId)}</select>
+      <button class="match-play-btn" ${m.categoryId ? "" : "disabled"}>▶ Грати</button>
+    </div>
   `;
 
   const select = card.querySelector(".match-category-select");
@@ -86,8 +87,8 @@ function renderFinalSection(view, state) {
 
   if (view.final.championIndex == null) {
     el.innerHTML = `
-      <h2>🏁 Фінальний поділ команди</h2>
-      <p class="locked-note">Стане доступним, коли визначиться команда-переможець фіналу.</p>
+      <h2>🏁 Фінальний поділ</h2>
+      <p class="locked-note">🔒 Після фіналу команд</p>
     `;
     return;
   }
@@ -96,40 +97,34 @@ function renderFinalSection(view, state) {
 
   if (view.final.completed) {
     const cat = findCategory(view.final.categoryId);
-    const winnerName = view.final.winner === "A" ? view.final.subA : view.final.subB;
     el.innerHTML = `
-      <h2>🏁 Фінальний поділ команди «${championName}»</h2>
-      <div class="match-team-row ${view.final.winner === "A" ? "winner" : ""}" style="max-width:320px;margin:0 auto;">
-        <span>${view.final.subA}</span><span class="match-score">${view.final.scoreA}</span>
+      <h2>🏁 Фінальний поділ · ${championName}</h2>
+      <div class="final-result">
+        <div class="match-team-row ${view.final.winner === "A" ? "winner" : ""}">
+          <span>${view.final.subA}</span><span class="match-score">${view.final.scoreA}</span>
+        </div>
+        <div class="match-vs">VS</div>
+        <div class="match-team-row ${view.final.winner === "B" ? "winner" : ""}">
+          <span>${view.final.subB}</span><span class="match-score">${view.final.scoreB}</span>
+        </div>
+        <div class="match-category-label">${cat ? cat.title : ""}</div>
       </div>
-      <div class="match-vs">VS</div>
-      <div class="match-team-row ${view.final.winner === "B" ? "winner" : ""}" style="max-width:320px;margin:0 auto;">
-        <span>${view.final.subB}</span><span class="match-score">${view.final.scoreB}</span>
-      </div>
-      <div class="match-category-label">✅ Категорія: ${cat ? cat.title : "—"}</div>
-      <p style="color:#4ade80; font-weight:700; margin-top:10px;">Переможець цього раунду: ${winnerName}</p>
     `;
     return;
   }
 
   el.innerHTML = `
-    <h2>🏁 Фінальний поділ команди «${championName}»</h2>
-    <p style="color:var(--text-muted);">Команда «${championName}» ділиться на 2 підгрупи по 2 людини, які грають одна проти одної.</p>
-    <div class="subteam-inputs">
-      <div>
-        <label style="font-size:0.78rem;color:var(--text-muted);">Назва підгрупи 1</label>
-        <input type="text" id="subAInput" value="${state.final.subA}" />
-      </div>
-      <div>
-        <label style="font-size:0.78rem;color:var(--text-muted);">Назва підгрупи 2</label>
-        <input type="text" id="subBInput" value="${state.final.subB}" />
-      </div>
+    <h2>🏁 Фінальний поділ · ${championName}</h2>
+    <div class="final-row">
+      <input type="text" id="subAInput" value="${state.final.subA}" />
+      <span class="match-vs">VS</span>
+      <input type="text" id="subBInput" value="${state.final.subB}" />
     </div>
-    <select class="match-category-select" id="finalCategorySelect" style="max-width:340px;margin:0 auto;">
-      ${categoryOptionsHtml(state, state.final.categoryId)}
-    </select>
-    <div>
-      <button class="match-play-btn" id="finalPlayBtn" style="max-width:260px;margin:16px auto 0;" ${state.final.categoryId ? "" : "disabled"}>▶ Грати фінальний раунд</button>
+    <div class="final-row">
+      <select class="match-category-select" id="finalCategorySelect">
+        ${categoryOptionsHtml(state, state.final.categoryId)}
+      </select>
+      <button class="match-play-btn" id="finalPlayBtn" ${state.final.categoryId ? "" : "disabled"}>▶ Грати</button>
     </div>
   `;
 
@@ -159,7 +154,7 @@ function renderTiebreakSection(view, state) {
   if (!view.final.completed) {
     el.innerHTML = `
       <h2>⚡ Вирішальний раунд</h2>
-      <p class="locked-note">Цей додатковий раунд (поза 8 категоріями) стане доступним одразу після фінального поділу.</p>
+      <p class="locked-note">🔒 Після фінального поділу</p>
     `;
     return;
   }
@@ -169,20 +164,15 @@ function renderTiebreakSection(view, state) {
     el.innerHTML = `
       <h2>🎉 Турнір завершено!</h2>
       <div class="champion-banner">🏆 ${winnerLabel}</div>
-      <p style="color:var(--text-muted);">Абсолютний переможець корпоративного квіз-турніру!</p>
     `;
     return;
   }
 
   el.innerHTML = `
     <h2>⚡ Вирішальний раунд</h2>
-    <p style="color:var(--text-muted);">
-      Додатковий раунд поза списком категорій — визначає фінального переможця
-      між «${state.final.subA}» та «${state.final.subB}».
-    </p>
-    <button class="match-play-btn" style="max-width:280px;margin:14px auto 0;" id="startTiebreakBtn">
-      🔥 Розпочати вирішальний раунд
-    </button>
+    <div class="final-row">
+      <button class="match-play-btn" id="startTiebreakBtn">🔥 Почати</button>
+    </div>
   `;
 
   document.getElementById("startTiebreakBtn").addEventListener("click", () => {
@@ -204,16 +194,16 @@ function renderCategoriesOverview(state) {
 
     let badgeHtml;
     if (!isUsed) {
-      badgeHtml = `<span class="cat-board-badge free">🟢 Вільна</span>`;
+      badgeHtml = `<span class="cat-board-badge free">Вільна</span>`;
     } else if (usage && usage.completed) {
-      badgeHtml = `<span class="cat-board-badge done">✅ Зіграно</span>`;
+      badgeHtml = `<span class="cat-board-badge done">Зіграно</span>`;
     } else {
-      badgeHtml = `<span class="cat-board-badge reserved">🟡 Обрано для матчу</span>`;
+      badgeHtml = `<span class="cat-board-badge reserved">Обрано</span>`;
     }
 
     const usageHtml =
       isUsed && usage
-        ? `<div class="cat-board-usage">${usage.stageLabel}<br />${usage.matchLabel}</div>`
+        ? `<span class="cat-board-usage">${usage.stageLabel}</span>`
         : "";
 
     card.innerHTML = `
@@ -239,7 +229,7 @@ function renderBracket() {
 }
 
 document.getElementById("resetTournamentBtn").addEventListener("click", () => {
-  if (confirm("Скинути весь турнір і почати заново?")) {
+  if (confirm("Скинути турнір?")) {
     resetTournament();
     window.location.href = "index.html";
   }

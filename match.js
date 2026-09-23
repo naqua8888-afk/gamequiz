@@ -28,12 +28,38 @@ if (stageKey === "final") {
   teamBName = state.teams[viewMatch.teamBIndex];
 }
 
-document.getElementById("matchTitle").textContent = `${teamAName} проти ${teamBName}`;
 document.getElementById("catName").textContent = category ? category.title : "";
 document.getElementById("teamAName").textContent = teamAName;
 document.getElementById("teamBName").textContent = teamBName;
 
-let currentTask = null;
+// Номери (індекси) вже зіграних питань; старе поле answeredPoints більше не використовується
+if (!Array.isArray(match.answered)) match.answered = [];
+
+let currentTaskIndex = null;
+
+/* Команди обирають питання по черзі: першою ходить команда A.
+   Черга визначається кількістю вже зіграних питань. */
+function currentTurn() {
+  return match.answered.length % 2 === 0 ? "A" : "B";
+}
+
+function teamName(who) {
+  return who === "A" ? teamAName : teamBName;
+}
+
+function otherTeam(who) {
+  return who === "A" ? "B" : "A";
+}
+
+function refreshTurn() {
+  const allDone = match.answered.length === category.tasks.length;
+  const turn = currentTurn();
+  document.getElementById("teamABox").classList.toggle("active", !allDone && turn === "A");
+  document.getElementById("teamBBox").classList.toggle("active", !allDone && turn === "B");
+  document.getElementById("turnIndicator").textContent = allDone
+    ? ""
+    : `Обирає: ${teamName(turn)}`;
+}
 
 function refreshScores() {
   document.getElementById("teamAScore").textContent = match.scoreA;
@@ -44,61 +70,128 @@ function renderTiles() {
   const grid = document.getElementById("tasksGrid");
   grid.innerHTML = "";
 
-  category.tasks
-    .slice()
-    .sort((a, b) => a.points - b.points)
-    .forEach((task) => {
-      const isDone = match.answeredPoints.includes(task.points);
-      const tile = document.createElement("div");
-      tile.className = "task-tile" + (isDone ? " done" : "");
-      tile.style.setProperty("--accent-color", "#3b82f6");
-      tile.textContent = task.points;
-      if (!isDone) {
-        tile.addEventListener("click", () => openModal(task));
-      }
-      grid.appendChild(tile);
-    });
+  category.tasks.forEach((task, i) => {
+    const isDone = match.answered.includes(i);
+    const tile = document.createElement("div");
+    tile.className = "task-tile" + (isDone ? " done" : "");
+    tile.style.setProperty("--accent-color", "#3b82f6");
+    tile.textContent = i + 1;
+    if (!isDone) {
+      tile.addEventListener("click", () => openModal(i));
+    }
+    grid.appendChild(tile);
+  });
 
-  const allDone = match.answeredPoints.length === category.tasks.length;
+  const allDone = match.answered.length === category.tasks.length;
   document.getElementById("finishPanel").style.display = allDone ? "block" : "none";
 
   if (allDone) {
-    const winABtn = document.getElementById("winABtn");
-    const winBBtn = document.getElementById("winBBtn");
-    winABtn.textContent = `🏆 Перемогла: ${teamAName} (${match.scoreA})`;
-    winBBtn.textContent = `🏆 Перемогла: ${teamBName} (${match.scoreB})`;
-    winABtn.classList.toggle("suggested", match.scoreA >= match.scoreB);
-    winBBtn.classList.toggle("suggested", match.scoreB > match.scoreA);
+    // Нічиєї не буває: сума балів 1+…+6 = 21 — непарна
+    const winner = match.scoreA > match.scoreB ? "A" : "B";
+    if (!match.completed) finishMatch(winner);
+    document.getElementById("winnerText").textContent = `🏆 Перемогла ${teamName(winner)}!`;
   }
 }
 
-function openModal(task) {
-  currentTask = task;
-  document.getElementById("modalPoints").textContent = task.points + " балів";
+function pointsLabel(n) {
+  const mod10 = n % 10, mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${n} бал`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${n} бали`;
+  return `${n} балів`;
+}
+
+/* Питання №N коштує N балів */
+function questionPoints(i) {
+  return i + 1;
+}
+
+/* Фото / аудіо до питання (поля image та audio в data.js) */
+const modalImage = document.getElementById("modalImage");
+const modalAudio = document.getElementById("modalAudio");
+const modalMediaMissing = document.getElementById("modalMediaMissing");
+
+function showMissing(src) {
+  modalMediaMissing.textContent = `⚠️ Файл не знайдено: ${src}`;
+  modalMediaMissing.style.display = "block";
+}
+
+modalImage.addEventListener("error", () => {
+  modalImage.style.display = "none";
+  showMissing(modalImage.getAttribute("src"));
+});
+modalAudio.addEventListener("error", () => {
+  modalAudio.style.display = "none";
+  showMissing(modalAudio.getAttribute("src"));
+});
+// Клік по фото — на весь екран і назад
+modalImage.addEventListener("click", () => modalImage.classList.toggle("zoomed"));
+
+function renderMedia(task) {
+  modalMediaMissing.style.display = "none";
+  modalImage.classList.remove("zoomed");
+
+  if (task.image) {
+    modalImage.src = task.image;
+    modalImage.style.display = "block";
+  } else {
+    modalImage.removeAttribute("src");
+    modalImage.style.display = "none";
+  }
+
+  if (task.audio) {
+    modalAudio.src = task.audio;
+    modalAudio.style.display = "block";
+  } else {
+    stopAudio();
+    modalAudio.style.display = "none";
+  }
+}
+
+function stopAudio() {
+  modalAudio.pause();
+  modalAudio.removeAttribute("src");
+  modalAudio.load();
+}
+
+function openModal(i) {
+  const task = category.tasks[i];
+  const points = questionPoints(i);
+  currentTaskIndex = i;
+  document.getElementById("modalPoints").textContent = `Питання ${i + 1} · ${pointsLabel(points)}`;
   document.getElementById("modalQuestion").textContent = task.question;
   document.getElementById("modalAnswerText").textContent = task.answer;
+  renderMedia(task);
   document.getElementById("modalAnswerBox").classList.remove("show");
   document.getElementById("modalActionsShow").style.display = "flex";
   document.getElementById("modalActionsJudge").style.display = "none";
-  document.getElementById("pointsABtn").textContent = `${teamAName} +${task.points}`;
-  document.getElementById("pointsBBtn").textContent = `${teamBName} +${task.points}`;
+  const turn = currentTurn();
+  document.getElementById("modalTurn").textContent = `Відповідає: ${teamName(turn)}`;
+  document.getElementById("correctBtn").textContent = `✅ Правильно`;
+  document.getElementById("wrongBtn").textContent = `❌ Неправильно`;
   document.getElementById("modalOverlay").classList.add("open");
 }
 
 function closeModal() {
   document.getElementById("modalOverlay").classList.remove("open");
-  currentTask = null;
+  stopAudio();
+  currentTaskIndex = null;
 }
 
-function awardPoints(who) {
-  if (!currentTask) return;
-  if (who === "A") match.scoreA += currentTask.points;
-  if (who === "B") match.scoreB += currentTask.points;
-  match.answeredPoints.push(currentTask.points);
+/* Правильна відповідь — бал команді, що обирала питання;
+   неправильна — бал суперникам. */
+function judgeAnswer(isCorrect) {
+  if (currentTaskIndex === null) return;
+  const turn = currentTurn();
+  const who = isCorrect ? turn : otherTeam(turn);
+  const points = questionPoints(currentTaskIndex);
+  if (who === "A") match.scoreA += points;
+  if (who === "B") match.scoreB += points;
+  match.answered.push(currentTaskIndex);
   saveTournament(state);
   closeModal();
   refreshScores();
   renderTiles();
+  refreshTurn();
 }
 
 document.getElementById("showAnswerBtn").addEventListener("click", () => {
@@ -107,9 +200,8 @@ document.getElementById("showAnswerBtn").addEventListener("click", () => {
   document.getElementById("modalActionsJudge").style.display = "flex";
 });
 document.getElementById("closeModalBtn").addEventListener("click", closeModal);
-document.getElementById("noOneBtn").addEventListener("click", () => awardPoints(null));
-document.getElementById("pointsABtn").addEventListener("click", () => awardPoints("A"));
-document.getElementById("pointsBBtn").addEventListener("click", () => awardPoints("B"));
+document.getElementById("correctBtn").addEventListener("click", () => judgeAnswer(true));
+document.getElementById("wrongBtn").addEventListener("click", () => judgeAnswer(false));
 document.getElementById("modalOverlay").addEventListener("click", (e) => {
   if (e.target.id === "modalOverlay") closeModal();
 });
@@ -124,11 +216,8 @@ function finishMatch(winner) {
     match.winnerIndex = winner === "A" ? viewMatch.teamAIndex : viewMatch.teamBIndex;
   }
   saveTournament(state);
-  window.location.href = "tournament.html";
 }
-
-document.getElementById("winABtn").addEventListener("click", () => finishMatch("A"));
-document.getElementById("winBBtn").addEventListener("click", () => finishMatch("B"));
 
 refreshScores();
 renderTiles();
+refreshTurn();

@@ -5,15 +5,15 @@
 let state = loadTournament();
 
 if (!state.final.completed) {
-  alert("Вирішальний раунд буде доступний після завершення фінального поділу.");
+  alert("Спершу зіграйте фінальний поділ.");
   window.location.href = "tournament.html";
 }
 
 document.getElementById("subHeading").textContent =
-  `${state.final.subA} проти ${state.final.subB} — хто відповість правильно першим, перемагає в турнірі!`;
+  `${state.final.subA} vs ${state.final.subB}`;
 
-document.getElementById("winABtn").textContent = `🏆 Перемогла: ${state.final.subA}`;
-document.getElementById("winBBtn").textContent = `🏆 Перемогла: ${state.final.subB}`;
+document.getElementById("winABtn").textContent = `🏆 ${state.final.subA}`;
+document.getElementById("winBBtn").textContent = `🏆 ${state.final.subB}`;
 
 function currentQuestion() {
   const i = state.tiebreak.currentQuestionIndex % TIEBREAK_QUESTIONS.length;
@@ -23,7 +23,7 @@ function currentQuestion() {
 function renderQuestion() {
   const q = currentQuestion();
   document.getElementById("qCounter").textContent =
-    `Питання №${state.tiebreak.currentQuestionIndex + 1}`;
+    `Питання ${state.tiebreak.currentQuestionIndex + 1}`;
   document.getElementById("qText").textContent = q.question;
   document.getElementById("aText").textContent = q.answer;
   document.getElementById("aBox").classList.remove("show");
