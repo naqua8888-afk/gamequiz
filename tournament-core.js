@@ -34,8 +34,8 @@ function defaultState() {
     r2: [emptyMatch(), emptyMatch()],
     r3: [emptyMatch()],
     final: {
-      subA: "Підгрупа 1",
-      subB: "Підгрупа 2",
+      subA: "Учасник 1",
+      subB: "Учасник 2",
       categoryId: null,
       scoreA: 0,
       scoreB: 0,

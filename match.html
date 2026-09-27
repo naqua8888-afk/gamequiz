@@ -2,6 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
+  <script src="auth.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Раунд</title>
   <link rel="stylesheet" href="style.css" />
@@ -29,9 +30,29 @@
 
     <div class="tasks-grid" id="tasksGrid"></div>
 
+    <!-- Змагання на швидкість (лише для категорій з mode: "race") -->
+    <div class="race-panel" id="racePanel" style="display:none;">
+      <div class="race-counter" id="raceCounter"></div>
+      <div class="race-ref" id="raceRef"></div>
+      <div class="answer-box" id="raceAnswerBox">
+        <div id="raceAnswerText"></div>
+      </div>
+      <button class="btn btn-ghost" id="raceShowBtn">Показати текст</button>
+      <div class="race-actions">
+        <button class="big-win-btn suggested" id="raceWinA"></button>
+        <button class="big-win-btn race-tie" id="raceTie"></button>
+        <button class="big-win-btn suggested" id="raceWinB"></button>
+      </div>
+    </div>
+
     <div class="finish-panel" id="finishPanel" style="display:none;">
       <h3 id="winnerText"></h3>
-      <div class="buttons">
+      <!-- При нічиї ведучий вирішує, хто переміг (напр. додатковим питанням) -->
+      <div class="buttons" id="tieButtons" style="display:none;">
+        <button class="big-win-btn" id="tieWinABtn"></button>
+        <button class="big-win-btn" id="tieWinBBtn"></button>
+      </div>
+      <div class="buttons" id="continueButtons">
         <a href="tournament.html" class="big-win-btn suggested continue-btn">Продовжити далі →</a>
       </div>
     </div>
@@ -50,12 +71,21 @@
         <div class="media-missing" id="modalMediaMissing"></div>
       </div>
 
+      <!-- Підказки (лише для категорій з mode: "clues") -->
+      <div class="clues-box" id="cluesBox">
+        <div class="clues-worth" id="cluesWorth"></div>
+        <ol class="clues-list" id="cluesList"></ol>
+      </div>
+
       <div class="answer-box" id="modalAnswerBox">
         <div id="modalAnswerText"></div>
+        <img id="modalAnswerImage" alt="" title="Натисніть, щоб збільшити" />
+        <div class="media-missing" id="modalAnswerMissing"></div>
       </div>
 
       <div class="modal-actions" id="modalActionsShow">
         <button class="btn btn-ghost" id="closeModalBtn">Назад</button>
+        <button class="btn btn-clue" id="nextClueBtn">🔍 Наступна підказка (−1)</button>
         <button class="btn btn-primary" id="showAnswerBtn">Відповідь</button>
       </div>
 

@@ -130,12 +130,12 @@ function renderFinalSection(view, state) {
 
   document.getElementById("subAInput").addEventListener("change", (e) => {
     const s = loadTournament();
-    s.final.subA = e.target.value.trim() || "Підгрупа 1";
+    s.final.subA = e.target.value.trim() || "Учасник 1";
     saveTournament(s);
   });
   document.getElementById("subBInput").addEventListener("change", (e) => {
     const s = loadTournament();
-    s.final.subB = e.target.value.trim() || "Підгрупа 2";
+    s.final.subB = e.target.value.trim() || "Учасник 2";
     saveTournament(s);
   });
   document.getElementById("finalCategorySelect").addEventListener("change", (e) => {
