@@ -113,10 +113,10 @@ const CATEGORIES = [
     mode: "race",
     tasks: [
       { question: "1 Самуїлова 16:7", answer: "Людина дивиться на те, що перед очима, а Господь дивиться на серце." },
-      { question: "Псалом 23:1", answer: "Господь — мій Пастир, тож не матиму нестачі ні в чому." },
+      { question: "Псалом 22:1", answer: "Господь — мій Пастир, тож не матиму нестачі ні в чому." },
       { question: "Приповістей 3:5", answer: "Надійся на Господа всім серцем своїм, а на розум свій не покладайся." },
       { question: "Ісаї 40:31", answer: "Ті, хто надіється на Господа, піднімуть крила, як орли." },
-      { question: "Єремії 29:11", answer: "Бог знає Свої думки про нас — думки про мир, щоб дати майбутнє й надію." },
+      { question: "Єремії 29:11", answer: "Бо Я знаю ті думки, які думаю про вас" },
       { question: "Матвія 6:33", answer: "Шукайте ж найперш Царства Божого й правди Його, а все інше додасться вам." },
       { question: "Івана 3:16", answer: "Бо так полюбив Бог світ, що дав Сина Свого Однородженого." },
       { question: "Римлян 8:28", answer: "Тим, хто любить Бога, усе допомагає на добре." },
@@ -131,14 +131,14 @@ const CATEGORIES = [
   },
   {
     id: "know-your-own",
-    title: "🔮 Впізнай своїх",
+    title: "🤝 Впізнай своїх",
     color: "#7c3aed",
     tasks: [
       { question: "Назвати когось з тих, хто попередив в групі, що запізниться на виїзд на ретрит", answer: "Відповідь", image: "media/know-your-own/1.jpg", answerImage: "media/know-your-own/1-answer.jpg" },
       { question: "Назвати дату, коли було зроблено це фото?", answer: "11.11.24", image: "media/know-your-own/2.jpg", answerImage: "media/know-your-own/2-answer.jpg" },
       { question: "Чия рука грає на гітарі?", answer: "Миколи Величка", image: "media/know-your-own/3.jpg", answerImage: "media/know-your-own/3-answer.jpg" },
       { question: "Кому подарували цей букет?", answer: "Сім'ї Величків", image: "media/know-your-own/4.jpg", answerImage: "media/know-your-own/4-answer.jpg" },
-      { question: "Кого додали в групу 100-м по рахунку?", answer: "Степан Гамчук", image: "media/know-your-own/5.jpg", answerImage: "media/know-your-own/5-answer.jpg" },
+      { question: "Кого додали в групу 100-м по рахунку?", answer: "Саша Гамчук", image: "media/know-your-own/5.jpg", answerImage: "media/know-your-own/5-answer.jpg" },
       { question: "Відгадати 3-х людей з минулого ретриту, чиї обличчя закриті", answer: "Макс Лещук, Тіма Туровець, Євген Меловацький, Іванка Гордіюк, Віра Ковердюк", image: "media/know-your-own/6.jpg", answerImage: "media/know-your-own/6-answer.jpg" }
     ]
   },
