@@ -160,8 +160,8 @@ const CATEGORIES = [
     title: "🎵 Старі добрі псалми",
     color: "#0891b2",
     tasks: [
-      { question: "", answer: "Земле, радій!.", audio: "media/psalms/1.mp3" },
-      { question: "", answer: "Брате, знову нагадай", audio: "media/psalms/2.mp3" },
+      { question: "", answer: "Земле, радій!", audio: "media/psalms/1.mp3" },
+      { question: "", answer: "Хоче всіх людей Господь благословить", audio: "media/psalms/2.mp3" },
       { question: "", answer: "За любов, за милість, за спасіння.", audio: "media/psalms/3.mp3" },
       { question: "", answer: "Знаєш, друже, річеньку ту?", audio: "media/psalms/4.mp3" },
       { question: "", answer: "Бажаю я щоб весь мій дім", audio: "media/psalms/5.mp3" },
