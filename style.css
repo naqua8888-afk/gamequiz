@@ -459,6 +459,22 @@ input[type="text"]:focus {
   min-height: 1.4em;
 }
 
+.first-turn-picker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+.first-turn-picker .btn.selected {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
 /* 6 питань в один ряд */
 .tasks-grid {
   display: grid;

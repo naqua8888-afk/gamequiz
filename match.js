@@ -49,10 +49,13 @@ if (isRaceMode) {
 
 let currentTaskIndex = null;
 
-/* Команди обирають питання по черзі: першою ходить команда A.
+/* Команди обирають питання по черзі: першою ходить команда, яку
+   ведучий обрав на початку раунду (за замовчуванням A).
    Черга визначається кількістю вже зіграних питань. */
+if (match.firstTurn !== "B") match.firstTurn = "A";
+
 function currentTurn() {
-  return match.answered.length % 2 === 0 ? "A" : "B";
+  return match.answered.length % 2 === 0 ? match.firstTurn : otherTeam(match.firstTurn);
 }
 
 function teamName(who) {
@@ -72,7 +75,27 @@ function refreshTurn() {
   document.getElementById("turnIndicator").textContent = showTurn
     ? `Обирає: ${teamName(turn)}`
     : "";
+
+  // Поки не зіграно жодного питання, можна обрати, хто починає
+  const canChoose = !isRaceMode && match.answered.length === 0;
+  document.getElementById("firstTurnPicker").style.display = canChoose ? "flex" : "none";
+  if (canChoose) {
+    document.getElementById("firstTurnA").textContent = teamAName;
+    document.getElementById("firstTurnB").textContent = teamBName;
+    document.getElementById("firstTurnA").classList.toggle("selected", match.firstTurn === "A");
+    document.getElementById("firstTurnB").classList.toggle("selected", match.firstTurn === "B");
+  }
 }
+
+function setFirstTurn(who) {
+  if (match.answered.length > 0) return;
+  match.firstTurn = who;
+  saveTournament(state);
+  refreshTurn();
+}
+
+document.getElementById("firstTurnA").addEventListener("click", () => setFirstTurn("A"));
+document.getElementById("firstTurnB").addEventListener("click", () => setFirstTurn("B"));
 
 function refreshScores() {
   document.getElementById("teamAScore").textContent = match.scoreA;
